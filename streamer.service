@@ -1,0 +1,58 @@
+# ============================================================
+#  streamer.service — Unit systemd pour le streamer 24/7
+#
+#  Installation :
+#    sudo cp streamer.service /etc/systemd/system/
+#    sudo systemctl daemon-reload
+#    sudo systemctl enable streamer
+#    sudo systemctl start streamer
+# ============================================================
+
+[Unit]
+Description=Streamer vidéo 24/7 basé sur FFmpeg
+Documentation=https://github.com/your-repo/streamer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# ── Utilisateur et groupe ─────────────────────────────────────────────────────
+# Créez un utilisateur dédié : sudo useradd -r -s /bin/false streamer
+User=streamer
+Group=streamer
+
+# ── Répertoire de travail (adapter à votre installation) ─────────────────────
+WorkingDirectory=/opt/stream
+
+# ── Commande de lancement ────────────────────────────────────────────────────
+ExecStart=/usr/bin/python3 -u /opt/stream/streamer.py
+
+# ── Arrêt propre ─────────────────────────────────────────────────────────────
+ExecStop=/bin/kill -TERM $MAINPID
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# ── Redémarrage automatique ───────────────────────────────────────────────────
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+# ── Variables d'environnement ─────────────────────────────────────────────────
+Environment=PYTHONUNBUFFERED=1
+
+# ── Logs (journald) ───────────────────────────────────────────────────────────
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=streamer
+
+# ── Sécurité (durcissement) ───────────────────────────────────────────────────
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ReadWritePaths=/var/log/streamer /opt/stream/videos
+
+[Install]
+WantedBy=multi-user.target

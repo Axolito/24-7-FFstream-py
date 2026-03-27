@@ -1,0 +1,86 @@
+# ============================================================
+#  Configuration du streamer 24/7
+# ============================================================
+
+[stream]
+# URL RTMP de destination (remplacer par votre endpoint)
+rtmp_url = "rtmp://your-server.example.com/live/stream-key"
+
+# Dossier contenant les vidéos à diffuser
+videos_dir = "/opt/stream/videos"
+
+# Ordre de lecture : "sequential" | "shuffle"
+order = "sequential"
+
+# Formats de fichiers acceptés
+extensions = ["mp4", "mkv", "mov", "avi", "flv", "webm"]
+
+
+[video]
+# Résolution de sortie (largeur x hauteur)
+width  = 1920
+height = 1080
+
+# Framerate de sortie
+fps = 30
+
+# Bitrate vidéo (ex: "4500k" pour YouTube/Twitch standard)
+video_bitrate = "4500k"
+
+# Codec vidéo : "libx264" (CPU) | "h264_nvenc" (GPU NVIDIA) | "h264_vaapi" (GPU AMD/Intel)
+video_codec = "libx264"
+
+# Preset libx264 : ultrafast | superfast | veryfast | faster | fast | medium
+# Plus rapide = moins de charge CPU mais qualité légèrement inférieure
+preset = "veryfast"
+
+# Profil H.264 : baseline | main | high
+profile = "main"
+
+# Keyframe interval en secondes (2 = toutes les 2s, recommandé pour le live)
+keyframe_interval = 2
+
+
+[audio]
+# Codec audio : "aac" recommandé pour RTMP
+audio_codec = "aac"
+
+# Bitrate audio
+audio_bitrate = "128k"
+
+# Fréquence d'échantillonnage
+sample_rate = 44100
+
+# Canaux : 1 (mono) | 2 (stéréo)
+channels = 2
+
+
+[behavior]
+# Secondes d'attente si le dossier vidéo est vide avant de réessayer
+empty_dir_retry_delay = 30
+
+# Secondes d'attente après une erreur FFmpeg avant de relancer
+error_retry_delay = 5
+
+# Nombre max de tentatives consécutives avant pause longue (0 = illimité)
+max_consecutive_errors = 10
+
+# Pause longue après trop d'erreurs consécutives (secondes)
+long_pause_delay = 60
+
+# Recharger la liste des vidéos à chaque nouveau cycle de playlist
+reload_on_cycle = true
+
+
+[logging]
+# Niveau de log : DEBUG | INFO | WARNING | ERROR
+level = "INFO"
+
+# Fichier de log (laisser vide pour stdout uniquement)
+log_file = "/var/log/streamer/streamer.log"
+
+# Taille max du fichier de log avant rotation (en Mo)
+max_log_size_mb = 50
+
+# Nombre de fichiers de log à conserver
+backup_count = 5
